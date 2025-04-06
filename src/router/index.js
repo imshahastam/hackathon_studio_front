@@ -1,20 +1,42 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import HomePage from "../views/HomePage.vue";
+import HackathonList from "../views/HackathonList.vue";
+import HackathonDetail from "../views/HackathonDetail.vue";
+import Leaderboard from "../views/Leaderboard.vue";
+import LoginPage from "../views/LoginPage.vue";
+import Dashboard from "../views/Dashboard.vue";
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    name: "Home",
+    component: HomePage,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/hackathons",
+    name: "Hackathons",
+    component: HackathonList,
+  },
+  {
+    path: "/hackathons/:id",
+    name: "HackathonDetail",
+    component: HackathonDetail,
+    props: true, // передаем параметр в компонент
+  },
+  {
+    path: "/leaderboard",
+    name: "Leaderboard",
+    component: Leaderboard,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: LoginPage,
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
   },
 ];
 
