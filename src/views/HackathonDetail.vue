@@ -15,6 +15,7 @@
       <strong>Призовой фонд:</strong> {{ hackathon.prizeFund || "Не указан" }}
     </p>
     <p><strong>Условия:</strong> {{ hackathon.conditions || "Нет условий" }}</p>
+    <p><strong>Тэги:</strong> {{ hackathon.tags || "Нет тэгов" }}</p>
   </div>
 
   <div v-else class="d-flex justify-content-center align-items-center mt-5">

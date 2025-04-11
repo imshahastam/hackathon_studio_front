@@ -4,7 +4,8 @@ import HackathonList from "../views/HackathonList.vue";
 import HackathonDetail from "../views/HackathonDetail.vue";
 import Leaderboard from "../views/Leaderboard.vue";
 import LoginPage from "../views/LoginPage.vue";
-import Dashboard from "../views/Dashboard.vue";
+import DashboardPage from "../views/Dashboard.vue";
+import { useAuthStore } from "../store/auth.js";
 
 const routes = [
   {
@@ -32,11 +33,27 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LoginPage,
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isAuthenticated) {
+        next("/dashboard"); // Если пользователь авторизован, перенаправляем на дашборд
+      } else {
+        next(); // Если не авторизован, оставляем на странице входа
+      }
+    },
   },
   {
     path: "/dashboard",
-    name: "Dashboard",
-    component: Dashboard,
+    name: "DashboardPage",
+    component: () => DashboardPage,
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (!authStore.isAuthenticated) {
+        next("/login"); // Если нет токена, перенаправляем на страницу входа
+      } else {
+        next(); // Если токен есть, продолжаем переход
+      }
+    },
   },
 ];
 
