@@ -2,15 +2,18 @@
   <div>
     <h1>Личный кабинет</h1>
     <p>Добро пожаловать, {{ userName }}!</p>
+    <OrganizerHackathons />
     <button @click="logout">Выйти</button>
   </div>
 </template>
 
 <script>
+import OrganizerHackathons from "./OrganizerHackathons.vue";
 import { useAuthStore } from "../store/auth.js";
 
 export default {
   name: "DashboardPage",
+  components: { OrganizerHackathons },
   computed: {
     userName() {
       const authStore = useAuthStore();
