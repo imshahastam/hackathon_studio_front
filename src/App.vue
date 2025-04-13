@@ -18,5 +18,7 @@ export default {
 </script>
 
 <style>
-/* Можешь добавить стили */
+* {
+  font-family: "Montserrat", sans-serif;
+}
 </style>

@@ -14,7 +14,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto fs-4">
           <li class="nav-item">
             <router-link class="nav-link" to="/">Главная</router-link>
           </li>
@@ -28,15 +28,22 @@
               >Лидерборд</router-link
             >
           </li>
-          <li class="nav-item" v-if="!isAuthenticated">
+          <!-- Гость -->
+          <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link class="nav-link" to="/login"
               >Регистрация/Вход</router-link
             >
           </li>
-          <li class="nav-item" v-if="isAuthenticated">
-            <router-link class="nav-link" to="/dashboard"
-              >Личный кабинет</router-link
+
+          <!-- Авторизован -->
+          <li class="nav-item" v-else>
+            <router-link
+              class="nav-link"
+              to="/dashboard"
+              title="Личный кабинет"
             >
+              <i class="bi bi-person-rolodex fs-3"></i>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -45,16 +52,13 @@
 </template>
 
 <script>
+import { useAuthStore } from "@/store/auth.js";
+
 export default {
   name: "NavbarComponent",
-  data() {
-    return {
-      isAuthenticated: false, // Заменить на реальную проверку авторизации
-    };
-  },
-  mounted() {
-    // Здесь можно добавить проверку авторизации пользователя
-    this.isAuthenticated = !!localStorage.getItem("userToken"); // Пример проверки по токену
+  setup() {
+    const authStore = useAuthStore();
+    return { authStore };
   },
 };
 </script>
