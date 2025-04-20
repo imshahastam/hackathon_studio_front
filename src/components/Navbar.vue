@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container-fluid">
-      <router-link class="navbar-brand" to="/">Platform</router-link>
+      <router-link class="navbar-brand" to="/">HackStudio</router-link>
       <button
         class="navbar-toggler"
         type="button"
