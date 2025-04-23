@@ -23,9 +23,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import "@/assets/styles/variables";
-
+<style>
 * {
   font-family: "Montserrat", sans-serif;
 }

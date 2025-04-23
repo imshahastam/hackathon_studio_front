@@ -42,7 +42,7 @@
               to="/dashboard"
               title="Личный кабинет"
             >
-              <i class="bi bi-person-rolodex fs-3"></i>
+              <i class="bi bi-person-video"></i>
             </router-link>
           </li>
         </ul>

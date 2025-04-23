@@ -80,15 +80,7 @@
 const currentYear = new Date().getFullYear();
 </script>
 
-<style lang="scss">
-@import "@/assets/styles/variables.scss";
-
-footer {
-  background-color: $color-primary; // Используем переменную
-  color: $color-light;
-  padding: 20px;
-}
-
+<style>
 p {
   font-size: 16px;
 }
