@@ -5,6 +5,7 @@ import HackathonDetail from "../views/HackathonDetail.vue";
 import Leaderboard from "../views/Leaderboard.vue";
 import LoginPage from "../views/LoginPage.vue";
 import DashboardPage from "../views/Dashboard.vue";
+import CreateHackathonForm from "@/views/CreateHackathonForm.vue";
 import { useAuthStore } from "../store/auth.js";
 
 const routes = [
@@ -54,6 +55,11 @@ const routes = [
         next(); // Если токен есть, продолжаем переход
       }
     },
+  },
+  {
+    path: "/hackathons/create",
+    name: "CreateHackathonForm",
+    component: CreateHackathonForm,
   },
 ];
 

@@ -1,5 +1,10 @@
 <template>
   <div class="container mt-5">
+    <router-link to="/hackathons/create">
+      <button type="button" class="btn btn-outline-success">
+        Создать хакатон
+      </button>
+    </router-link>
     <div class="row">
       <div
         class="mb-3"
