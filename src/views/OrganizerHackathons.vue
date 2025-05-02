@@ -11,6 +11,8 @@
         class="card shadow-sm p-3"
         v-for="hackathon in hackathons"
         :key="hackathon.name"
+        @click="goToHackathonDetail(hackathon.id)"
+        style="cursor: pointer"
       >
         <div
           class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center"
@@ -73,6 +75,13 @@ export default {
     countTeams(hackathon) {
       // пока нет информации о командах, можно заглушку:
       return Math.ceil((hackathon.participantIds?.length || 0) / 4); // например, 4 чел. в команде
+    },
+    goToHackathonDetail(hackathonId) {
+      // Переход на страницу с деталями хакатона по ID
+      this.$router.push({
+        name: "HackathonDetail",
+        params: { id: hackathonId },
+      });
     },
   },
 };
