@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <router-link to="/hackathons/create">
+    <router-link v-if="isOrganizer" to="/hackathons/create">
       <button type="button" class="btn btn-outline-success">
         Создать хакатон
       </button>
@@ -25,11 +25,18 @@
 
 <script>
 import HackathonCard from "../components/HackathonCard.vue";
+import { useAuthStore } from "@/store/auth";
 
 export default {
   name: "HackathonList",
   components: {
     HackathonCard,
+  },
+  setup() {
+    const authStore = useAuthStore();
+    const isOrganizer = authStore.hasRole("ROLE_ORGANIZER");
+
+    return { isOrganizer };
   },
   data() {
     return {

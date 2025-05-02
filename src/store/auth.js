@@ -1,29 +1,36 @@
 import { defineStore } from "pinia";
 
+import { jwtDecode } from "jwt-decode";
+
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem("token") || null, // Загружаем токен из localStorage, если он есть
+    token: localStorage.getItem("token") || null,
     username: localStorage.getItem("username") || null,
+    roles: [],
   }),
   actions: {
-    setToken(token, username) {
+    setToken(token) {
       this.token = token;
-      this.username = username; // Сохраняем пользователя в state
       localStorage.setItem("token", token);
-      localStorage.setItem("username", username); // Сохраняем в localStorage
-      console.log("Token set:", this.token); // Проверяем, что токен сохранен
-      console.log("Username set:", this.username);
+
+      const decoded = jwtDecode(token);
+      this.username = decoded.sub;
+      this.roles = decoded.roles || [];
+
+      localStorage.setItem("username", this.username);
+      localStorage.setItem("roles", JSON.stringify(this.roles));
     },
     clearToken() {
       this.token = null;
       this.username = null;
+      this.roles = [];
       localStorage.removeItem("token");
       localStorage.removeItem("username");
-      console.log("Token cleared:", this.token); // Проверяем, что токен очищен
-      console.log("Username cleared:", this.username); // Проверяем, что имя очищено
+      localStorage.removeItem("roles");
     },
   },
   getters: {
-    isAuthenticated: (state) => !!state.token, // Проверяем, есть ли токен
+    isAuthenticated: (state) => !!state.token,
+    hasRole: (state) => (role) => state.roles.includes(role),
   },
 });
