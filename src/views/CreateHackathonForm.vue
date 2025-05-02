@@ -24,7 +24,7 @@
           <label class="form-label">Статус</label>
           <select class="form-select" v-model="form.status" required>
             <option value="PLANNED">PLANNED</option>
-            <option value="ONGOING">ACTIVE</option>
+            <option value="ACTIVE">ACTIVE</option>
             <option value="FINISHED">FINISHED</option>
           </select>
         </div>
@@ -33,7 +33,7 @@
           <select class="form-select" v-model="form.type" required>
             <option value="ONLINE">ONLINE</option>
             <option value="OFFLINE">OFFLINE</option>
-            <option value="OFFLINE">HYBRID</option>
+            <option value="HYBRID">HYBRID</option>
           </select>
         </div>
       </div>
