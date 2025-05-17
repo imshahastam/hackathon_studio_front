@@ -66,15 +66,8 @@
         <input type="text" class="form-control" v-model="form.location" />
       </div>
 
-      <!-- Тэги (мультивыбор по ID) -->
-      <div class="mb-3">
-        <label class="form-label">Тэги</label>
-        <select class="form-select" multiple v-model="form.tagsId">
-          <option v-for="tag in availableTags" :key="tag.id" :value="tag.id">
-            {{ tag.name }}
-          </option>
-        </select>
-      </div>
+      <!-- Tags -->
+      <TagSelect v-model="selectedTags" />
 
       <!-- Призовой фонд -->
       <div class="mb-3">
@@ -95,8 +88,13 @@
 </template>
 
 <script>
+import TagSelect from "@/components/TagSelect.vue";
+
 export default {
   name: "CreateHackathon",
+  components: {
+    TagSelect,
+  },
   data() {
     return {
       form: {
@@ -107,35 +105,34 @@ export default {
         start_date: "",
         end_date: "",
         location: "",
-        tagsId: [],
         prizeFund: null,
         conditions: "",
       },
-      availableTags: [
-        { id: 1, name: "AI" },
-        { id: 2, name: "Design" },
-        { id: 3, name: "Security" },
-        { id: 4, name: "Data" },
-        { id: 5, name: "Frontend" },
-      ],
+      selectedTags: [], // тэги из TagSelect
     };
   },
   methods: {
     formatDateWithSeconds(datetime) {
       if (!datetime) return "";
-      // Если уже есть секунды — не трогаем
       if (datetime.length === 19) return datetime;
-      return datetime + ":00"; // Добавляем секунды вручную
+      return datetime + ":00";
     },
 
     async createHackathon() {
       try {
         const token = localStorage.getItem("token");
 
+        const tagsId = this.selectedTags.filter((t) => t.id).map((t) => t.id);
+        const newTags = this.selectedTags
+          .filter((t) => !t.id)
+          .map((t) => t.name);
+
         const payload = {
           ...this.form,
           start_date: this.formatDateWithSeconds(this.form.start_date),
           end_date: this.formatDateWithSeconds(this.form.end_date),
+          tagsId,
+          newTags,
         };
 
         const response = await fetch(
@@ -150,16 +147,12 @@ export default {
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Ошибка при создании хакатона");
-        }
+        if (!response.ok) throw new Error("Ошибка при создании хакатона");
 
         const data = await response.json();
         this.$router.push(`/hackathons/${data.id}`);
       } catch (error) {
         console.error("Ошибка:", error);
-        console.log("Request body:", JSON.stringify(this.form, null, 2));
-
         alert("Не удалось создать хакатон");
       }
     },
