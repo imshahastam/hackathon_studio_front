@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-4">
     <h2>Создание хакатона</h2>
-    <form @submit.prevent="createHackathon">
+    <form @submit.prevent="submitHackathon">
       <!-- Название -->
       <div class="mb-3">
         <label class="form-label">Название</label>
@@ -85,16 +85,31 @@
       <button type="submit" class="btn btn-success">Создать</button>
     </form>
   </div>
+  <InviteJudgesPanel :hackathonId="Number(this.id)" />
 </template>
 
 <script>
 import TagSelect from "@/components/TagSelect.vue";
+import InviteJudgesPanel from "@/components/InviteJudgesPanel.vue";
 
 export default {
   name: "CreateHackathon",
   components: {
     TagSelect,
+    InviteJudgesPanel,
   },
+  props: {
+    id: {
+      type: String,
+      required: false,
+    },
+  },
+  computed: {
+    isEditMode() {
+      return !!this.id;
+    },
+  },
+
   data() {
     return {
       form: {
@@ -111,6 +126,12 @@ export default {
       selectedTags: [], // тэги из TagSelect
     };
   },
+  async mounted() {
+    if (this.isEditMode) {
+      await this.loadHackathon(this.id);
+    }
+  },
+
   methods: {
     formatDateWithSeconds(datetime) {
       if (!datetime) return "";
@@ -118,7 +139,7 @@ export default {
       return datetime + ":00";
     },
 
-    async createHackathon() {
+    async submitHackathon() {
       try {
         const token = localStorage.getItem("token");
 
@@ -135,17 +156,19 @@ export default {
           newTags,
         };
 
-        const response = await fetch(
-          "http://localhost:8080/hackathons/create",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(payload),
-          }
-        );
+        const url = this.isEditMode
+          ? `http://localhost:8080/hackathons/${this.id}/edit`
+          : `http://localhost:8080/hackathons/create`;
+        const method = this.isEditMode ? "PUT" : "POST";
+
+        const response = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
 
         if (!response.ok) throw new Error("Ошибка при создании хакатона");
 
@@ -154,6 +177,31 @@ export default {
       } catch (error) {
         console.error("Ошибка:", error);
         alert("Не удалось создать хакатон");
+      }
+    },
+
+    async loadHackathon(id) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`http://localhost:8080/hackathons/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+
+        this.form.name = data.name;
+        this.form.description = data.description;
+        this.form.status = data.status;
+        this.form.type = data.type;
+        this.form.start_date = data.startDate.slice(0, 16); // формат datetime-local
+        this.form.end_date = data.endDate.slice(0, 16);
+        this.form.location = data.location;
+        this.form.prizeFund = data.prizeFund;
+        this.form.conditions = data.conditions;
+        this.selectedTags = data.tags; // если tags — массив строк
+      } catch (error) {
+        console.error("Ошибка загрузки хакатона:", error);
       }
     },
   },

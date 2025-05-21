@@ -72,6 +72,16 @@ export default {
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
   },
+
+  watch: {
+    modelValue: {
+      immediate: true,
+      handler(newVal) {
+        this.selectedTags = [...newVal]; // обновляем локальное состояние
+      },
+    },
+  },
+
   methods: {
     async fetchTags() {
       try {
@@ -87,7 +97,7 @@ export default {
       this.filteredTags = this.allTags.filter(
         (tag) =>
           tag.name.toLowerCase().includes(q) &&
-          !this.selectedTags.some((t) => t.name === tag.name)
+          !this.selectedTags.some((t) => t.name === tag.name || t.id === tag.id)
       );
     },
     selectTag(tag) {

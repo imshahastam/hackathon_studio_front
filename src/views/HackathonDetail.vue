@@ -4,10 +4,18 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="mb-0">{{ hackathon.name }}</h2>
       <div class="d-flex gap-2" v-if="isMyHackathon">
-        <button type="button" class="btn btn-outline-warning btn-sm">
+        <button
+          type="button"
+          class="btn btn-outline-warning btn-sm"
+          @click="editHackathon"
+        >
           Редактировать
         </button>
-        <button type="button" class="btn btn-outline-danger btn-sm">
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm"
+          @click="deleteHackathon"
+        >
           Удалить
         </button>
       </div>
@@ -35,7 +43,7 @@
           :key="index"
           class="badge rounded-pill bg-secondary me-2"
         >
-          {{ tag }}
+          {{ tag.name }}
         </span>
       </div>
       <div v-else class="text-muted">Нет тэгов</div>
@@ -122,6 +130,34 @@ export default {
         console.error("Ошибка при загрузке данных хакатона:", error);
       }
     },
+    async deleteHackathon() {
+      if (!confirm("Вы уверены, что хотите удалить этот хакатон?")) return;
+
+      try {
+        const token = localStorage.getItem("token");
+        const hackathonId = this.$route.params.id;
+
+        const response = await fetch(
+          `http://localhost:8080/hackathons/${hackathonId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Не удалось удалить хакатон");
+        }
+
+        alert("Хакатон успешно удалён");
+        this.$router.back(); // возвращаемся на предыдущую страницу
+      } catch (error) {
+        console.error("Ошибка при удалении:", error);
+        alert("Произошла ошибка при удалении хакатона");
+      }
+    },
     async fetchJudges(id) {
       try {
         const token = localStorage.getItem("token"); // достаём токен
@@ -141,6 +177,11 @@ export default {
       } catch (error) {
         console.error("Ошибка при загрузке судей:", error);
       }
+    },
+
+    editHackathon() {
+      const id = this.$route.params.id;
+      this.$router.push({ name: "EditHackathon", params: { id } });
     },
   },
 };

@@ -61,6 +61,12 @@ const routes = [
     name: "CreateHackathonForm",
     component: CreateHackathonForm,
   },
+  {
+    path: "/hackathons/:id/edit",
+    name: "EditHackathon",
+    component: CreateHackathonForm,
+    props: true,
+  },
 ];
 
 const router = createRouter({
