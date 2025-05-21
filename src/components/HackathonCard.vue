@@ -69,21 +69,21 @@ export default {
     statusBadgeClass() {
       switch (this.hackathon.status) {
         case "ACTIVE":
-          return "text-bg-success"; // Зеленый для активных
+          return "text-bg-warning"; // Желтый для активных
         case "PLANNED":
-          return "text-bg-warning"; // Желтый для запланированных
+          return "text-bg-secondary"; // Серый для запланированных
         default:
-          return "text-bg-secondary"; // Серый для других статусов
+          return "text-bg-success"; // Зеленый для других статусов
       }
     },
     typeBadgeClass() {
       switch (this.hackathon.type) {
         case "ONLINE":
-          return "text-bg-info"; // Голубой для онлайн
+          return "text-bg-light";
         case "OFFLINE":
-          return "text-bg-danger"; // Красный для оффлайн
+          return "text-bg-dark";
         default:
-          return "text-bg-dark"; // Темный для других типов
+          return "text-bg-info";
       }
     },
   },

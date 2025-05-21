@@ -1,10 +1,12 @@
 <template>
   <div class="container mt-5">
-    <router-link v-if="isOrganizer" to="/hackathons/create">
-      <button type="button" class="btn btn-outline-success">
-        Создать хакатон
-      </button>
-    </router-link>
+    <div class="mb-4" style="margin-top: 10px">
+      <router-link v-if="isOrganizer" to="/hackathons/create">
+        <button type="button" class="btn btn-outline-success">
+          Создать хакатон
+        </button>
+      </router-link>
+    </div>
     <div class="row">
       <div
         class="mb-3"

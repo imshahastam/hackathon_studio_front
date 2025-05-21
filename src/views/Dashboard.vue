@@ -1,9 +1,15 @@
 <template>
-  <div>
-    <h1>Личный кабинет</h1>
-    <p>Добро пожаловать, {{ userName }}!</p>
+  <div class="container mt-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h1 class="mb-0">Личный кабинет</h1>
+        <p class="mb-0">Добро пожаловать, {{ userName }}!</p>
+      </div>
+      <button @click="logout" class="btn btn-outline-danger btn-sm ms-3">
+        Выйти
+      </button>
+    </div>
     <OrganizerHackathons />
-    <button @click="logout">Выйти</button>
   </div>
 </template>
 

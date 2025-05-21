@@ -21,8 +21,13 @@
           <div class="mb-2 mb-md-0">
             <h4 class="mb-1">{{ hackathon.name }}</h4>
             <div class="mb-2">
-              <span class="badge bg-primary me-2">{{ hackathon.status }}</span>
-              <span class="badge bg-secondary">{{ hackathon.type }}</span>
+              <!-- Статус и тип в виде badges -->
+              <span class="badge" :class="statusBadgeClass(hackathon.status)">{{
+                hackathon.status
+              }}</span>
+              <span class="badge" :class="typeBadgeClass(hackathon.type)">{{
+                hackathon.type
+              }}</span>
             </div>
             <div v-if="hackathon.location" class="text-muted">
               <i class="bi bi-geo-alt-fill me-1"></i>{{ hackathon.location }}
@@ -82,6 +87,26 @@ export default {
         name: "HackathonDetail",
         params: { id: hackathonId },
       });
+    },
+    statusBadgeClass(status) {
+      switch (status) {
+        case "ACTIVE":
+          return "text-bg-warning"; // Желтый для активных
+        case "PLANNED":
+          return "text-bg-secondary"; // Серый для запланированных
+        default:
+          return "text-bg-success"; // Зеленый для других статусов
+      }
+    },
+    typeBadgeClass(type) {
+      switch (type) {
+        case "ONLINE":
+          return "text-bg-light";
+        case "OFFLINE":
+          return "text-bg-dark";
+        default:
+          return "text-bg-info";
+      }
     },
   },
 };
