@@ -1,11 +1,22 @@
 <template>
   <div class="container mt-4">
-    <h2>Создание хакатона</h2>
-    <form @submit.prevent="submitHackathon">
+    <h2>{{ isEditMode ? "Изменение хакатона" : "Создание хакатона" }}</h2>
+    <form @submit.prevent="trySubmit" novalidate>
       <!-- Название -->
       <div class="mb-3">
         <label class="form-label">Название</label>
-        <input type="text" class="form-control" v-model="form.name" required />
+        <input
+          type="text"
+          class="form-control"
+          v-model="form.name"
+          :class="{ 'is-invalid': submitted && !isNameValid }"
+          required
+          minlength="3"
+          maxlength="100"
+        />
+        <div class="invalid-feedback">
+          Название обязательно (3-100 символов)
+        </div>
       </div>
 
       <!-- Описание -->
@@ -14,8 +25,13 @@
         <textarea
           class="form-control"
           v-model="form.description"
+          :class="{ 'is-invalid': submitted && !isDescriptionValid }"
           required
+          minlength="20"
         ></textarea>
+        <div class="invalid-feedback">
+          Описание обязательно (от 20 символов)
+        </div>
       </div>
 
       <!-- Статус и Тип на одной строке -->
@@ -46,8 +62,12 @@
             type="datetime-local"
             class="form-control"
             v-model="form.start_date"
+            :class="{ 'is-invalid': submitted && !isStartDateValid }"
             required
           />
+          <div class="invalid-feedback">
+            Дата начала обязательна и не может быть в прошлом
+          </div>
         </div>
         <div class="col-md-6">
           <label class="form-label">Дата окончания</label>
@@ -55,8 +75,13 @@
             type="datetime-local"
             class="form-control"
             v-model="form.end_date"
+            :class="{ 'is-invalid': submitted && !isEndDateValid }"
             required
           />
+          <div class="invalid-feedback">
+            Дата окончания обязательна, должна быть после даты начала и в
+            будущем
+          </div>
         </div>
       </div>
 
@@ -72,20 +97,39 @@
       <!-- Призовой фонд -->
       <div class="mb-3">
         <label class="form-label">Призовой фонд</label>
-        <input type="number" class="form-control" v-model="form.prizeFund" />
+        <input
+          type="number"
+          step="0.01"
+          class="form-control"
+          v-model.number="form.prizeFund"
+          :class="{ 'is-invalid': submitted && !isPrizeFundValid }"
+          required
+          min="0.01"
+        />
+        <div class="invalid-feedback">
+          Призовой фонд должен быть больше нуля
+        </div>
       </div>
 
       <!-- Условия -->
       <div class="mb-3">
         <label class="form-label">Условия</label>
-        <textarea class="form-control" v-model="form.conditions"></textarea>
+        <textarea
+          class="form-control"
+          v-model="form.conditions"
+          :class="{ 'is-invalid': submitted && !isConditionsValid }"
+          required
+        ></textarea>
+        <div class="invalid-feedback">Условия обязательны</div>
       </div>
 
       <!-- Кнопка -->
-      <button type="submit" class="btn btn-success">Создать</button>
+      <button type="submit" class="btn btn-success">
+        {{ isEditMode ? "Сохранить изменения" : "Создать" }}
+      </button>
     </form>
+    <InviteJudgesPanel v-if="isEditMode" :hackathonId="Number(id)" />
   </div>
-  <InviteJudgesPanel :hackathonId="Number(this.id)" />
 </template>
 
 <script>
@@ -108,6 +152,48 @@ export default {
     isEditMode() {
       return !!this.id;
     },
+
+    isNameValid() {
+      return (
+        this.form.name &&
+        this.form.name.length >= 3 &&
+        this.form.name.length <= 100
+      );
+    },
+    isDescriptionValid() {
+      return this.form.description && this.form.description.length >= 20;
+    },
+    isStartDateValid() {
+      if (!this.form.start_date) return false;
+      const now = new Date();
+      const start = new Date(this.form.start_date);
+      return (
+        start >= new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      );
+    },
+    isEndDateValid() {
+      if (!this.form.end_date || !this.form.start_date) return false;
+      const start = new Date(this.form.start_date);
+      const end = new Date(this.form.end_date);
+      const now = new Date();
+      return end > start && end > now;
+    },
+    isPrizeFundValid() {
+      return typeof this.form.prizeFund === "number" && this.form.prizeFund > 0;
+    },
+    isConditionsValid() {
+      return !!this.form.conditions && this.form.conditions.trim().length > 0;
+    },
+    isFormValid() {
+      return (
+        this.isNameValid &&
+        this.isDescriptionValid &&
+        this.isStartDateValid &&
+        this.isEndDateValid &&
+        this.isPrizeFundValid &&
+        this.isConditionsValid
+      );
+    },
   },
 
   data() {
@@ -124,6 +210,7 @@ export default {
         conditions: "",
       },
       selectedTags: [], // тэги из TagSelect
+      submitted: false,
     };
   },
   async mounted() {
@@ -178,6 +265,12 @@ export default {
         console.error("Ошибка:", error);
         alert("Не удалось создать хакатон");
       }
+    },
+
+    async trySubmit() {
+      this.submitted = true;
+      if (!this.isFormValid) return;
+      await this.submitHackathon();
     },
 
     async loadHackathon(id) {
