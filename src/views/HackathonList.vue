@@ -3,7 +3,7 @@
     <div class="mb-4" style="margin-top: 10px">
       <router-link v-if="isOrganizer" to="/hackathons/create">
         <button type="button" class="btn btn-outline-success">
-          Создать хакатон
+          Create hackathon
         </button>
       </router-link>
     </div>

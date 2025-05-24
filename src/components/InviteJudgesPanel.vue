@@ -1,7 +1,7 @@
 <template>
   <div class="mt-5">
     <!-- Текущие судьи -->
-    <h4>Судьи хакатона</h4>
+    <h4>Hackathon's Judges</h4>
     <ul v-if="currentJudges.length" class="list-group mb-4">
       <li
         v-for="judge in currentJudges"
@@ -11,10 +11,10 @@
         {{ judge.firstName }} {{ judge.lastName }}
       </li>
     </ul>
-    <p v-else class="text-muted">Пока нет судей.</p>
+    <p v-else class="text-muted">There are no judges yet.</p>
 
     <!-- Приглашения -->
-    <h4>Пригласить судей</h4>
+    <h4>Invite judges:</h4>
     <div class="row">
       <div class="col-md-6 mb-4" v-for="judge in allJudges" :key="judge.id">
         <div class="card h-100">
@@ -23,7 +23,7 @@
               <img
                 src="https://via.placeholder.com/100"
                 class="img-fluid rounded-start"
-                alt="Фото судьи"
+                alt="Judge's photo"
               />
             </div>
             <div class="col-8">
@@ -32,10 +32,10 @@
                   {{ judge.firstName }} {{ judge.lastName }}
                 </h5>
                 <p class="mb-1">
-                  <strong>Компания:</strong> {{ judge.company }}
+                  <strong>Company:</strong> {{ judge.company }}
                 </p>
                 <p class="mb-1">
-                  <strong>Опыт:</strong> {{ judge.workExperience }} года
+                  <strong>EXP:</strong> {{ judge.workExperience }}
                 </p>
                 <div class="mt-2">
                   <span
@@ -123,13 +123,13 @@ export default {
         );
 
         if (!response.ok) {
-          throw new Error("Ошибка при отправке приглашения");
+          throw new Error("Error when sending the invitation");
         }
 
-        alert("Приглашение отправлено");
+        alert("Invitation sended");
       } catch (error) {
-        console.error("Ошибка при отправке приглашения:", error);
-        alert("Не удалось отправить приглашение");
+        console.error("Error when sending the invitation:", error);
+        alert("Couldn't send invitation");
       }
     },
   },

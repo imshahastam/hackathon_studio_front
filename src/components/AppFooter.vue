@@ -6,30 +6,30 @@
         <div class="col-md-4 mb-3">
           <h6 class="fw-semibold">Hackathon Studio</h6>
           <p class="small">
-            Платформа для организации и участия в хакатонах. Всё, что нужно — в
-            одном месте.
+            Web-platform for organize and participate in hackathons. Everything
+            you need — in one place.
           </p>
         </div>
 
         <!-- Быстрые ссылки -->
         <div class="col-md-3 mb-3">
-          <h6 class="fw-semibold">Ссылки</h6>
+          <h6 class="fw-semibold">Links</h6>
           <ul class="list-unstyled small">
             <li>
               <a href="/hackathons" class="text-muted text-decoration-none"
-                >Хакатоны</a
+                >Hackathons</a
               >
             </li>
             <li>
               <a href="/dashboard" class="text-muted text-decoration-none"
-                >Личный кабинет</a
+                >Dashboard</a
               >
             </li>
             <li>
               <a
                 href="/create-hackathon"
                 class="text-muted text-decoration-none"
-                >Создать хакатон</a
+                >Create a hackathon</a
               >
             </li>
           </ul>
@@ -37,7 +37,7 @@
 
         <!-- Контакты -->
         <div class="col-md-4 mb-3">
-          <h6 class="fw-semibold">Контакты</h6>
+          <h6 class="fw-semibold">Contacts</h6>
           <ul class="list-unstyled small">
             <li>
               Email:
@@ -70,7 +70,7 @@
       <hr class="my-3" />
 
       <div class="text-center small">
-        © {{ currentYear }} HackStudio. Сделано с заботой.
+        © {{ currentYear }} HackStudio. Made with care.
       </div>
     </div>
   </footer>

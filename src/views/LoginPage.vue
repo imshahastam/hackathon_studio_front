@@ -1,10 +1,10 @@
 <template>
   <div class="container mt-5" style="max-width: 400px">
-    <h2 class="mb-4">Вход</h2>
+    <h2 class="mb-4">Log in</h2>
 
     <form @submit.prevent="login">
       <div class="mb-3">
-        <label for="username" class="form-label">Логин</label>
+        <label for="username" class="form-label">Username</label>
         <input
           v-model="username"
           type="text"
@@ -15,7 +15,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Пароль</label>
+        <label for="password" class="form-label">Password</label>
         <input
           v-model="password"
           type="password"
@@ -25,12 +25,10 @@
         />
       </div>
 
-      <button type="submit" class="btn btn-primary w-100">Войти</button>
+      <button type="submit" class="btn btn-primary w-100">Log in</button>
     </form>
 
-    <p class="mt-3 text-center text-muted" style="cursor: pointer">
-      Регистрация
-    </p>
+    <p class="mt-3 text-center text-muted" style="cursor: pointer">Sign in</p>
   </div>
 </template>
 
@@ -78,7 +76,7 @@ export default {
         this.$router.push("/dashboard");
       } catch (error) {
         console.error("Ошибка входа:", error);
-        alert("Ошибка входа. Проверьте логин и пароль.");
+        alert("Login error. Check your username and password.");
       }
     },
   },

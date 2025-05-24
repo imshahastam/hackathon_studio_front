@@ -2,11 +2,11 @@
   <div class="container mt-4">
     <div class="d-flex align-items-center justify-content-between mb-3">
       <div>
-        <h1 class="mb-0">Личный кабинет</h1>
-        <p class="mb-0">Добро пожаловать, {{ userName }}!</p>
+        <h1 class="mb-0">Dashboard</h1>
+        <p class="mb-0">Welcome, {{ userName }}!</p>
       </div>
       <button @click="logout" class="btn btn-outline-danger btn-sm ms-3">
-        Выйти
+        Log out
       </button>
     </div>
     <OrganizerHackathons />

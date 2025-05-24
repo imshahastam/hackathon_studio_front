@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Лидерборд</h1>
+    <h1>Leaderboard</h1>
     <p>Это лидерборд</p>
   </div>
 </template>

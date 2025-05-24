@@ -1,10 +1,10 @@
 <template>
   <div class="container mt-4">
-    <h2>{{ isEditMode ? "Изменение хакатона" : "Создание хакатона" }}</h2>
+    <h2>{{ isEditMode ? "Change hackathon info" : "Create hackathon" }}</h2>
     <form @submit.prevent="trySubmit" novalidate>
       <!-- Название -->
       <div class="mb-3">
-        <label class="form-label">Название</label>
+        <label class="form-label">Name</label>
         <input
           type="text"
           class="form-control"
@@ -15,29 +15,30 @@
           maxlength="100"
         />
         <div class="invalid-feedback">
-          Название обязательно (3-100 символов)
+          Hackathon name is required (must be between 3 and 100 char)
         </div>
       </div>
 
       <!-- Описание -->
       <div class="mb-3">
-        <label class="form-label">Описание</label>
-        <textarea
-          class="form-control"
-          v-model="form.description"
+        <label class="form-label">Description</label>
+        <quillEditor
+          v-model:content="form.description"
+          content-type="html"
+          :modules="modules"
+          style="min-height: 200px"
+          class="bg-white"
           :class="{ 'is-invalid': submitted && !isDescriptionValid }"
-          required
-          minlength="20"
-        ></textarea>
+        />
         <div class="invalid-feedback">
-          Описание обязательно (от 20 символов)
+          Description must be at least 20 characters
         </div>
       </div>
 
       <!-- Статус и Тип на одной строке -->
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="form-label">Статус</label>
+          <label class="form-label">Status</label>
           <select class="form-select" v-model="form.status" required>
             <option value="PLANNED">PLANNED</option>
             <option value="ACTIVE">ACTIVE</option>
@@ -45,7 +46,7 @@
           </select>
         </div>
         <div class="col-md-6">
-          <label class="form-label">Тип</label>
+          <label class="form-label">Type</label>
           <select class="form-select" v-model="form.type" required>
             <option value="ONLINE">ONLINE</option>
             <option value="OFFLINE">OFFLINE</option>
@@ -57,7 +58,7 @@
       <!-- Дата начала и окончания на одной строке -->
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="form-label">Дата начала</label>
+          <label class="form-label">Start Date</label>
           <input
             type="datetime-local"
             class="form-control"
@@ -66,11 +67,11 @@
             required
           />
           <div class="invalid-feedback">
-            Дата начала обязательна и не может быть в прошлом
+            Start date is required and cannot be in the past
           </div>
         </div>
         <div class="col-md-6">
-          <label class="form-label">Дата окончания</label>
+          <label class="form-label">End Date</label>
           <input
             type="datetime-local"
             class="form-control"
@@ -79,15 +80,14 @@
             required
           />
           <div class="invalid-feedback">
-            Дата окончания обязательна, должна быть после даты начала и в
-            будущем
+            End date is required and must be in the future
           </div>
         </div>
       </div>
 
       <!-- Локация -->
       <div class="mb-3">
-        <label class="form-label">Локация</label>
+        <label class="form-label">Location</label>
         <input type="text" class="form-control" v-model="form.location" />
       </div>
 
@@ -96,7 +96,7 @@
 
       <!-- Призовой фонд -->
       <div class="mb-3">
-        <label class="form-label">Призовой фонд</label>
+        <label class="form-label">Prize fund</label>
         <input
           type="number"
           step="0.01"
@@ -106,26 +106,24 @@
           required
           min="0.01"
         />
-        <div class="invalid-feedback">
-          Призовой фонд должен быть больше нуля
-        </div>
+        <div class="invalid-feedback">Prize fund must be greater than zero</div>
       </div>
 
       <!-- Условия -->
       <div class="mb-3">
-        <label class="form-label">Условия</label>
+        <label class="form-label">Conditions</label>
         <textarea
           class="form-control"
           v-model="form.conditions"
           :class="{ 'is-invalid': submitted && !isConditionsValid }"
           required
         ></textarea>
-        <div class="invalid-feedback">Условия обязательны</div>
+        <div class="invalid-feedback">Conditions are required</div>
       </div>
 
       <!-- Кнопка -->
       <button type="submit" class="btn btn-success">
-        {{ isEditMode ? "Сохранить изменения" : "Создать" }}
+        {{ isEditMode ? "Save changes" : "Create" }}
       </button>
     </form>
     <InviteJudgesPanel v-if="isEditMode" :hackathonId="Number(id)" />
@@ -135,12 +133,19 @@
 <script>
 import TagSelect from "@/components/TagSelect.vue";
 import InviteJudgesPanel from "@/components/InviteJudgesPanel.vue";
+import { quillEditor } from "vue3-quill";
+import Quill from "quill";
+import "quill-emoji";
+
+// Подключаем emoji в Quill (важно до использования Editor)
+Quill.register("modules/emoji", require("quill-emoji").default);
 
 export default {
   name: "CreateHackathon",
   components: {
     TagSelect,
     InviteJudgesPanel,
+    quillEditor,
   },
   props: {
     id: {
@@ -211,6 +216,18 @@ export default {
       },
       selectedTags: [], // тэги из TagSelect
       submitted: false,
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "strike"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ color: [] }, { background: [] }],
+          ["link", "blockquote", "code-block"],
+          ["emoji"],
+          ["clean"],
+        ],
+        emoji: true,
+      },
     };
   },
   async mounted() {

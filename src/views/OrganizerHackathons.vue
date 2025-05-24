@@ -1,9 +1,9 @@
 <template>
   <div class="container mt-4">
-    <h2 class="mb-3">Мои хакатоны</h2>
+    <h2 class="mb-3">MY HACKATHONS</h2>
 
     <div v-if="hackathons.length === 0" class="text-muted">
-      Вы пока не организовываете ни один хакатон.
+      You're not organizing any hackathons yet.
     </div>
 
     <div v-else class="d-flex flex-column gap-3">
@@ -33,15 +33,42 @@
               <i class="bi bi-geo-alt-fill me-1"></i>{{ hackathon.location }}
             </div>
             <div class="mt-2 small">
-              <strong>Участников:</strong> {{ countParticipants(hackathon) }} |
-              <strong>Команд:</strong> {{ countTeams(hackathon) }}
+              <strong>Members:</strong> {{ countParticipants(hackathon) }} |
+              <strong>Teams:</strong> {{ countTeams(hackathon) }}
             </div>
           </div>
 
           <!-- Правая часть -->
-          <div class="text-end text-md-end mt-2 mt-md-0">
-            <p class="text-success fw-bold mb-0">Призовой фонд:</p>
-            <p class="text-success h5 mb-0">{{ hackathon.prizeFund }} сом</p>
+          <div
+            class="d-flex flex-column align-items-end justify-content-start mt-2 mt-md-0"
+            style="min-width: 150px"
+          >
+            <div
+              class="btn-group btn-group-sm mb-2"
+              role="group"
+              aria-label="Small button group"
+            >
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                @click.stop="editHackathon(hackathon)"
+                title="Edit"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                @click.stop="deleteHackathon(hackathon)"
+                title="Delete"
+              >
+                <i class="bi bi-trash3"></i>
+              </button>
+            </div>
+            <div class="mt-3 text-end">
+              <p class="text-success fw-bold mb-0">Prize fund:</p>
+              <p class="text-success h5 mb-0">{{ hackathon.prizeFund }} som</p>
+            </div>
           </div>
         </div>
       </div>
@@ -107,6 +134,40 @@ export default {
         default:
           return "text-bg-info";
       }
+    },
+    async deleteHackathon(hackathon) {
+      if (!confirm("Are you sure you want to delete this hackathon?")) return;
+
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          `http://localhost:8080/hackathons/${hackathon.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Не удалось удалить хакатон");
+        }
+
+        alert("Successfully deleted.");
+        this.hackathons = this.hackathons.filter((h) => h.id !== hackathon.id);
+        this.$router.back(); // возвращаемся на предыдущую страницу
+      } catch (error) {
+        console.error("Ошибка при удалении:", error);
+        alert("Error");
+      }
+    },
+    editHackathon(hackathon) {
+      this.$router.push({
+        name: "EditHackathon",
+        params: { id: hackathon.id },
+      });
     },
   },
 };

@@ -16,32 +16,28 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto fs-4">
           <li class="nav-item">
-            <router-link class="nav-link" to="/">Главная</router-link>
+            <router-link class="nav-link" to="/">home</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/hackathons"
-              >Хакатоны</router-link
+              >hackathons</router-link
             >
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/leaderboard"
-              >Лидерборд</router-link
+              >leaderboard</router-link
             >
           </li>
           <!-- Гость -->
           <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link class="nav-link" to="/login"
-              >Регистрация/Вход</router-link
+              >sign up/log in</router-link
             >
           </li>
 
           <!-- Авторизован -->
           <li class="nav-item" v-else>
-            <router-link
-              class="nav-link"
-              to="/dashboard"
-              title="Личный кабинет"
-            >
+            <router-link class="nav-link" to="/dashboard" title="Dashboard">
               <i class="bi bi-person-video"></i>
             </router-link>
           </li>

@@ -1,13 +1,13 @@
 <!-- TagSelect.vue -->
 <template>
   <div class="mb-3 position-relative">
-    <label class="form-label">Тэги</label>
+    <label class="form-label">Tags</label>
 
     <!-- Инпут поиска -->
     <input
       type="text"
       class="form-control"
-      placeholder="Начните вводить тэг..."
+      placeholder="Start typing the tag..."
       v-model="search"
       @focus="dropdownOpen = true"
       @keydown.enter.prevent="addTag"
@@ -42,7 +42,7 @@
         <button
           type="button"
           class="btn-close btn-close-white btn-sm ms-1"
-          aria-label="Удалить"
+          aria-label="Delete"
           @click="removeTag(tag)"
         ></button>
       </span>

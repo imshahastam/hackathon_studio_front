@@ -9,14 +9,14 @@
           class="btn btn-outline-warning btn-sm"
           @click="editHackathon"
         >
-          Редактировать
+          Edit
         </button>
         <button
           type="button"
           class="btn btn-outline-danger btn-sm"
           @click="deleteHackathon"
         >
-          Удалить
+          Delete
         </button>
       </div>
     </div>
@@ -24,19 +24,28 @@
     <p class="text-muted">{{ hackathon.description }}</p>
 
     <div class="mb-3">
-      <span class="badge text-bg-primary me-2">{{ hackathon.status }}</span>
-      <span class="badge text-bg-secondary">{{ hackathon.type }}</span>
+      <!-- Статус и тип в виде badges -->
+      <span class="badge" :class="statusBadgeClass(hackathon.status)">{{
+        hackathon.status
+      }}</span>
+      <span class="badge" :class="typeBadgeClass(hackathon.type)">{{
+        hackathon.type
+      }}</span>
     </div>
 
-    <p><strong>Дата начала:</strong> {{ formattedStartDate }}</p>
-    <p><strong>Дата окончания:</strong> {{ formattedEndDate }}</p>
-    <p><strong>Локация:</strong> {{ hackathon.location || "Не указана" }}</p>
+    <p><strong>Start date:</strong> {{ formattedStartDate }}</p>
+    <p><strong>End date:</strong> {{ formattedEndDate }}</p>
     <p>
-      <strong>Призовой фонд:</strong> {{ hackathon.prizeFund || "Не указан" }}
+      <strong>Location:</strong> {{ hackathon.location || "Not specified" }}
     </p>
-    <p><strong>Условия:</strong> {{ hackathon.conditions || "Нет условий" }}</p>
+    <p>
+      <strong>Prize fund:</strong> {{ hackathon.prizeFund || "Not specified" }}
+    </p>
+    <p>
+      <strong>Conditions:</strong> {{ hackathon.conditions || "Not specified" }}
+    </p>
     <div class="mb-3">
-      <p><strong>Тэги:</strong></p>
+      <p><strong>Tags:</strong></p>
       <div v-if="hackathon.tags && hackathon.tags.length">
         <span
           v-for="(tag, index) in hackathon.tags"
@@ -46,14 +55,14 @@
           {{ tag.name }}
         </span>
       </div>
-      <div v-else class="text-muted">Нет тэгов</div>
+      <div v-else class="text-muted">No tags</div>
     </div>
 
     <!-- Судьи -->
     <div class="mt-5">
-      <h4>Судьи</h4>
+      <h4>Judges</h4>
       <div v-if="judges.length === 0" class="text-muted">
-        Нет судей для этого хакатона.
+        Judges have not yet been appointed for this hackathon.
       </div>
       <div v-else>
         <div
@@ -63,11 +72,9 @@
         >
           <h5>{{ judge.firstName }} {{ judge.lastName }}</h5>
           <p class="mb-1"><strong>Username:</strong> {{ judge.username }}</p>
-          <p class="mb-1"><strong>Компания:</strong> {{ judge.company }}</p>
-          <p class="mb-1">
-            <strong>Опыт работы:</strong> {{ judge.workExperience }} года
-          </p>
-          <p class="mb-0"><strong>О себе:</strong> {{ judge.bio }}</p>
+          <p class="mb-1"><strong>Company:</strong> {{ judge.company }}</p>
+          <p class="mb-1"><strong>EXP:</strong> {{ judge.workExperience }}</p>
+          <p class="mb-0"><strong>Bio:</strong> {{ judge.bio }}</p>
         </div>
       </div>
     </div>
@@ -76,9 +83,9 @@
   <div v-else class="d-flex justify-content-center align-items-center mt-5">
     <div class="text-center">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Загрузка...</span>
+        <span class="visually-hidden">Loading...</span>
       </div>
-      <p class="mt-3">Загрузка данных хакатона...</p>
+      <p class="mt-3">Loading hackathon's info...</p>
     </div>
   </div>
 </template>
@@ -121,6 +128,27 @@ export default {
     this.fetchJudges(hackathonId);
   },
   methods: {
+    statusBadgeClass(status) {
+      switch (status) {
+        case "ACTIVE":
+          return "text-bg-warning"; // Желтый для активных
+        case "PLANNED":
+          return "text-bg-secondary"; // Серый для запланированных
+        default:
+          return "text-bg-success"; // Зеленый для других статусов
+      }
+    },
+    typeBadgeClass(type) {
+      switch (type) {
+        case "ONLINE":
+          return "text-bg-light";
+        case "OFFLINE":
+          return "text-bg-dark";
+        default:
+          return "text-bg-info";
+      }
+    },
+
     async fetchHackathonDetails(id) {
       try {
         const response = await fetch(`http://localhost:8080/hackathons/${id}`);
@@ -131,7 +159,7 @@ export default {
       }
     },
     async deleteHackathon() {
-      if (!confirm("Вы уверены, что хотите удалить этот хакатон?")) return;
+      if (!confirm("Are you sure you want to delete this hackathon?")) return;
 
       try {
         const token = localStorage.getItem("token");
@@ -151,11 +179,11 @@ export default {
           throw new Error("Не удалось удалить хакатон");
         }
 
-        alert("Хакатон успешно удалён");
+        alert("Successfully deleted.");
         this.$router.back(); // возвращаемся на предыдущую страницу
       } catch (error) {
         console.error("Ошибка при удалении:", error);
-        alert("Произошла ошибка при удалении хакатона");
+        alert("Error");
       }
     },
     async fetchJudges(id) {
