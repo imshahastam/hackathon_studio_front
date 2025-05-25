@@ -126,6 +126,7 @@
         {{ isEditMode ? "Save changes" : "Create" }}
       </button>
     </form>
+    <PhaseEditor :hackathonId="id" @phases-saved="onPhasesSaved" />
     <InviteJudgesPanel v-if="isEditMode" :hackathonId="Number(id)" />
   </div>
 </template>
@@ -133,6 +134,7 @@
 <script>
 import TagSelect from "@/components/TagSelect.vue";
 import InviteJudgesPanel from "@/components/InviteJudgesPanel.vue";
+import PhaseEditor from "@/components/PhaseEditor.vue";
 import { quillEditor } from "vue3-quill";
 import Quill from "quill";
 import "quill-emoji";
@@ -146,6 +148,7 @@ export default {
     TagSelect,
     InviteJudgesPanel,
     quillEditor,
+    PhaseEditor,
   },
   props: {
     id: {

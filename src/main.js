@@ -8,6 +8,9 @@ import "bootstrap/dist/js/bootstrap.js";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:8080";
 
 const app = createApp(App);
 

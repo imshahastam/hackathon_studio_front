@@ -31,8 +31,12 @@
       }}</span>
     </div>
 
-    <p><strong>Start date:</strong> {{ formattedStartDate }}</p>
-    <p><strong>End date:</strong> {{ formattedEndDate }}</p>
+    <HackathonInlineTimeline
+      v-if="hackathon"
+      :hackathon="hackathon"
+      :hackathon-id="Number($route.params.id)"
+    />
+
     <p>
       <strong>Location:</strong> {{ hackathon.location || "Not specified" }}
     </p>
@@ -78,6 +82,11 @@
         </div>
       </div>
     </div>
+
+    <!-- Таймлайн -->
+    <div class="mt-5">
+      <HackathonTimeline :hackathon-id="Number($route.params.id)" />
+    </div>
   </div>
 
   <div v-else class="d-flex justify-content-center align-items-center mt-5">
@@ -92,9 +101,15 @@
 
 <script>
 import { useAuthStore } from "@/store/auth";
+import HackathonTimeline from "@/components/HackathonTimeline.vue";
+import HackathonInlineTimeline from "@/components/HackathonInlineTimeline.vue";
 
 export default {
   name: "HackathonDetail",
+  components: {
+    HackathonTimeline,
+    HackathonInlineTimeline,
+  },
   data() {
     return {
       hackathon: null,
@@ -110,16 +125,6 @@ export default {
         this.hackathon &&
         Number(this.hackathon.organizerId) === Number(this.authStore.userId)
       );
-    },
-    formattedStartDate() {
-      return this.hackathon
-        ? new Date(this.hackathon.startDate).toLocaleString()
-        : "";
-    },
-    formattedEndDate() {
-      return this.hackathon
-        ? new Date(this.hackathon.endDate).toLocaleString()
-        : "";
     },
   },
   mounted() {
