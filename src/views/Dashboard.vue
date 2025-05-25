@@ -1,31 +1,29 @@
 <template>
-  <div class="container mt-4">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <div>
-        <h1 class="mb-0">Dashboard</h1>
-        <p class="mb-0">Welcome, {{ userName }}!</p>
+  <div class="d-flex" style="min-height: 100vh">
+    <SidebarComponent @logout="logout" />
+    <div class="container p-4">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+          <h1 class="mb-0">Welcome, {{ userName }}!</h1>
+        </div>
       </div>
-      <button @click="logout" class="btn btn-outline-danger btn-sm ms-3">
-        Log out
-      </button>
     </div>
-    <OrganizerHackathons />
   </div>
 </template>
 
 <script>
-import OrganizerHackathons from "./OrganizerHackathons.vue";
+import SidebarComponent from "@/components/SidebarComponent.vue";
 import { useAuthStore } from "../store/auth.js";
 
 export default {
   name: "DashboardPage",
-  components: { OrganizerHackathons },
+  components: { SidebarComponent },
   computed: {
     userName() {
       const authStore = useAuthStore();
       console.log("Current token:", authStore.token); // Проверяем, что токен доступен
       console.log("Current username:", authStore.username);
-      return authStore.username ? authStore.username : "Гость"; // Проверяем, есть ли имя пользователя
+      return authStore.username ? authStore.username : "Guest"; // Проверяем, есть ли имя пользователя
     },
   },
   methods: {
@@ -44,6 +42,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Можно добавить стили для личного кабинета */
-</style>
+<style scoped></style>

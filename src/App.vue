@@ -2,7 +2,7 @@
   <div id="app" class="d-flex flex-column min-vh-100">
     <NavbarComponent />
 
-    <div class="container mt-5 pt-5 flex-grow-1">
+    <div class="container-fluid mt-3 pt-5 flex-grow-1">
       <router-view />
     </div>
 
@@ -26,5 +26,10 @@ export default {
 <style>
 * {
   font-family: "Tomorrow", sans-serif;
+}
+
+.container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 </style>

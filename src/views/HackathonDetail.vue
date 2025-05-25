@@ -21,8 +21,6 @@
       </div>
     </div>
 
-    <p class="text-muted">{{ hackathon.description }}</p>
-
     <div class="mb-3">
       <!-- Статус и тип в виде badges -->
       <span class="badge" :class="statusBadgeClass(hackathon.status)">{{
@@ -57,6 +55,8 @@
       </div>
       <div v-else class="text-muted">No tags</div>
     </div>
+
+    <div v-html="hackathon.description"></div>
 
     <!-- Судьи -->
     <div class="mt-5">

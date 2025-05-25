@@ -23,7 +23,7 @@
       <div class="mb-3">
         <label class="form-label">Description</label>
         <quillEditor
-          v-model:content="form.description"
+          v-model:value="form.description"
           content-type="html"
           :modules="modules"
           style="min-height: 200px"
@@ -166,7 +166,11 @@ export default {
       );
     },
     isDescriptionValid() {
-      return this.form.description && this.form.description.length >= 20;
+      console.log("desc validation:", this.form.description);
+      const div = document.createElement("div");
+      div.innerHTML = this.form.description || "";
+      const text = div.textContent || div.innerText || "";
+      return text.trim().length >= 20;
     },
     isStartDateValid() {
       if (!this.form.start_date) return false;
@@ -259,6 +263,8 @@ export default {
           tagsId,
           newTags,
         };
+
+        console.log("submit hack description:", this.form.description);
 
         const url = this.isEditMode
           ? `http://localhost:8080/hackathons/${this.id}/edit`

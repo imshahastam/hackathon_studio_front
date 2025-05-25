@@ -4,15 +4,23 @@ import HackathonList from "../views/HackathonList.vue";
 import HackathonDetail from "../views/HackathonDetail.vue";
 import Leaderboard from "../views/Leaderboard.vue";
 import LoginPage from "../views/LoginPage.vue";
+import RegistrationForm from "@/views/RegistrationForm.vue";
 import DashboardPage from "../views/Dashboard.vue";
 import CreateHackathonForm from "@/views/CreateHackathonForm.vue";
+import TestComponent from "@/components/TestComponent.vue";
 import { useAuthStore } from "../store/auth.js";
+import OrganizerHackathons from "@/views/OrganizerHackathons.vue";
 
 const routes = [
   {
     path: "/",
     name: "Home",
     component: HomePage,
+  },
+  {
+    path: "/test",
+    name: "TestComponent",
+    component: TestComponent,
   },
   {
     path: "/hackathons",
@@ -30,6 +38,7 @@ const routes = [
     name: "Leaderboard",
     component: Leaderboard,
   },
+  { path: "/register", name: "Register", component: RegistrationForm },
   {
     path: "/login",
     name: "Login",
@@ -55,6 +64,11 @@ const routes = [
         next(); // Если токен есть, продолжаем переход
       }
     },
+  },
+  {
+    path: "/my-hackathons",
+    name: "OrganizerHackathons",
+    component: OrganizerHackathons,
   },
   {
     path: "/hackathons/create",

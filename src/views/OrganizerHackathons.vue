@@ -1,7 +1,5 @@
 <template>
-  <div class="container mt-4">
-    <h2 class="mb-3">MY HACKATHONS</h2>
-
+  <div class="container mt-6">
     <div v-if="hackathons.length === 0" class="text-muted">
       You're not organizing any hackathons yet.
     </div>

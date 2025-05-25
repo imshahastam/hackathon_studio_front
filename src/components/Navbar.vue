@@ -36,10 +36,44 @@
           </li>
 
           <!-- Авторизован -->
-          <li class="nav-item" v-else>
-            <router-link class="nav-link" to="/dashboard" title="Dashboard">
+          <li class="nav-item dropdown" v-if="authStore.isAuthenticated">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="userDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              title="Personal cabinet"
+            >
               <i class="bi bi-person-video"></i>
-            </router-link>
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="userDropdown"
+            >
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click.prevent="switchRole('ORGANIZER')"
+                >
+                  Organizer
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click.prevent="switchRole('PARTICIPANT')"
+                >
+                  Participant
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" @click.prevent="switchRole('JUDGE')">
+                  Judge
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -49,12 +83,27 @@
 
 <script>
 import { useAuthStore } from "@/store/auth.js";
+import { useRouter } from "vue-router";
 
 export default {
   name: "NavbarComponent",
   setup() {
     const authStore = useAuthStore();
-    return { authStore };
+    const router = useRouter();
+
+    function switchRole(role) {
+      // Тут подменяй роль пользователя, если нужно сохранять — меняй в store/pinia
+      // authStore.setRole(role); // Если есть такой метод
+      // Или вручную:
+      authStore.role = role;
+
+      // Перенаправлять на соответствующий кабинет
+      if (role === "ORGANIZER") router.push("/dashboard");
+      if (role === "PARTICIPANT") router.push("/participant");
+      if (role === "JUDGE") router.push("/judge");
+    }
+
+    return { authStore, switchRole };
   },
 };
 </script>

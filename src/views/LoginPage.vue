@@ -28,7 +28,11 @@
       <button type="submit" class="btn btn-primary w-100">Log in</button>
     </form>
 
-    <p class="mt-3 text-center text-muted" style="cursor: pointer">Sign in</p>
+    <p class="mt-3 text-center text-muted" style="cursor: pointer">
+      <router-link to="/register" class="text-decoration-none">
+        Sign up
+      </router-link>
+    </p>
   </div>
 </template>
 
