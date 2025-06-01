@@ -1,8 +1,8 @@
 <template>
-  <div id="app" class="d-flex flex-column min-vh-100">
+  <div id="app">
     <NavbarComponent />
 
-    <div class="container-fluid mt-3 pt-5 flex-grow-1">
+    <div class="pt-[30px]">
       <router-view />
     </div>
 
@@ -11,8 +11,9 @@
 </template>
 
 <script>
-import NavbarComponent from "./components/Navbar.vue";
+import NavbarComponent from "./components/NavbarComponent.vue";
 import FooterComponent from "./components/AppFooter.vue";
+import "./assets/tailwind.css";
 
 export default {
   name: "App",
@@ -26,10 +27,5 @@ export default {
 <style>
 * {
   font-family: "Tomorrow", sans-serif;
-}
-
-.container-fluid {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
 }
 </style>

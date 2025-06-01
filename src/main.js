@@ -9,6 +9,7 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
 import axios from "axios";
+import "./assets/tailwind.css";
 
 axios.defaults.baseURL = "http://localhost:8080";
 

@@ -108,8 +108,24 @@ export default {
         isSystem: false,
       });
     },
-    removePhase(idx) {
-      this.phases.splice(idx, 1);
+    async removePhase(idx) {
+      const phase = this.phases[idx];
+
+      if (phase.id) {
+        try {
+          await api.delete(
+            `/hackathons/${this.hackathonId}/phases/${phase.id}`
+          );
+          this.phases.splice(idx, 1);
+        } catch (e) {
+          alert(
+            "Не удалось удалить этап: " +
+              (e?.response?.data?.message || e.message)
+          );
+        }
+      } else {
+        this.phases.splice(idx, 1);
+      }
     },
     onTypeChange(phase) {
       // system phases: isSystem всегда true
@@ -128,7 +144,6 @@ export default {
         isSystem: ["REGISTRATION", "SUBMISSION", "JUDGING"].includes(
           phase.type
         ),
-        // Если нужно привести обратно к полному ISO
         startTime:
           phase.startTime.length === 16
             ? phase.startTime + ":00"
@@ -137,11 +152,15 @@ export default {
           phase.endTime.length === 16 ? phase.endTime + ":00" : phase.endTime,
       }));
       try {
-        await api.post(`/hackathons/${this.hackathonId}/phases`, phasesToSave);
-        this.$emit("phases-saved", phasesToSave);
+        await api.put(`/hackathons/${this.hackathonId}/phases`, phasesToSave);
         alert("Phases saved!");
+        await this.loadPhases();
       } catch (e) {
-        alert("Error saving phases: " + e.message);
+        console.log(phasesToSave);
+        alert(
+          "Ошибка при сохранении этапов: " +
+            (e?.response?.data?.message || e.message)
+        );
       }
     },
   },
