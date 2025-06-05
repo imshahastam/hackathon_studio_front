@@ -1,7 +1,7 @@
 <template>
   <div class="fixed top-0 left-0 w-full z-50 shadow-md">
     <div class="bg-white text-black border rounded-xl p-2 flex items-center">
-      <div class="flex items-center cursor-pointer">
+      <div class="flex items-center cursor-pointer mx-4">
         <h5>HackStudio</h5>
       </div>
 
@@ -18,7 +18,16 @@
       </ul>
 
       <!-- Авторизован -->
-      <li class="nav-item dropdown list-none" v-if="authStore.isAuthenticated">
+      <li
+        class="nav-item dropdown list-none mx-2"
+        v-if="authStore.isAuthenticated"
+      >
+        <i class="bi bi-bell"></i>
+      </li>
+      <li
+        class="nav-item dropdown list-none mx-4"
+        v-if="authStore.isAuthenticated"
+      >
         <a
           class="nav-link dropdown-toggle"
           href="#"
@@ -53,7 +62,9 @@
             </a>
           </li>
           <li>
-            <a class="dropdown-item" @click.prevent="logout"> Log out </a>
+            <a class="dropdown-item hover:bg-red" @click.prevent="logout"
+              >Log out</a
+            >
           </li>
         </ul>
       </li>

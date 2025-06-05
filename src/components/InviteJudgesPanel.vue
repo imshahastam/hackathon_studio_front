@@ -46,12 +46,22 @@
                     {{ tag }}
                   </span>
                 </div>
-                <button
-                  class="btn btn-outline-success btn-sm position-absolute top-0 end-0 m-2"
-                  @click="inviteJudge(judge.id)"
-                >
-                  +
-                </button>
+
+                <!-- Кнопка/иконка статуса -->
+                <div class="position-absolute top-0 end-0 m-2">
+                  <button
+                    v-if="!pendingInvitations.has(judge.id)"
+                    class="btn btn-outline-success btn-sm"
+                    @click="inviteJudge(judge.id)"
+                  >
+                    +
+                  </button>
+                  <i
+                    v-else
+                    class="bi bi-hourglass-split text-warning fs-5"
+                    title="Invitation sent, waiting"
+                  ></i>
+                </div>
               </div>
             </div>
           </div>
@@ -62,6 +72,9 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+import api from "@/axios";
+
 export default {
   name: "InviteJudgesPanel",
   props: {
@@ -70,48 +83,53 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      currentJudges: [],
-      allJudges: [],
-    };
-  },
-  mounted() {
-    this.fetchCurrentJudges();
-    this.fetchAllJudges();
-  },
-  methods: {
-    async fetchCurrentJudges() {
+  setup(props) {
+    const currentJudges = ref([]);
+    const allJudges = ref([]);
+    const pendingInvitations = ref(new Set());
+
+    const fetchCurrentJudges = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `http://localhost:8080/hackathons/${this.hackathonId}/hack-judges`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const response = await api.get(
+          `/hackathons/${props.hackathonId}/hack-judges`
         );
-        const data = await response.json();
-        this.currentJudges = data;
+        currentJudges.value = response.data;
       } catch (error) {
         console.error("Ошибка при загрузке текущих судей:", error);
       }
-    },
-    async fetchAllJudges() {
+    };
+
+    const fetchAllJudges = async () => {
       try {
-        const response = await fetch("http://localhost:8080/judges/all");
-        const data = await response.json();
-        this.allJudges = data;
+        const response = await api.get("/judges/all");
+        allJudges.value = response.data;
       } catch (error) {
         console.error("Ошибка при загрузке всех судей:", error);
       }
-    },
-    async inviteJudge(judgeId) {
+    };
+
+    const fetchPendingInvitations = async () => {
+      try {
+        const response = await api.get(
+          `/judges/${props.hackathonId}/invitations`
+        );
+        const data = response.data;
+
+        const pending = data
+          .filter((inv) => inv.status === "PENDING")
+          .map((inv) => inv.judgeId);
+
+        pendingInvitations.value = new Set(pending);
+      } catch (error) {
+        console.error("Ошибка при загрузке приглашений:", error);
+      }
+    };
+
+    const inviteJudge = async (judgeId) => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:8080/hackathons/${this.hackathonId}/invite-judge`,
+          `http://localhost:8080/hackathons/${props.hackathonId}/invite-judge`,
           {
             method: "POST",
             headers: {
@@ -122,16 +140,28 @@ export default {
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Error when sending the invitation");
-        }
+        if (!response.ok) throw new Error("Error when sending the invitation");
 
-        alert("Invitation sended");
+        alert("Invitation sent");
+        await fetchPendingInvitations(); // обновим статус
       } catch (error) {
         console.error("Error when sending the invitation:", error);
         alert("Couldn't send invitation");
       }
-    },
+    };
+
+    onMounted(() => {
+      fetchCurrentJudges();
+      fetchAllJudges();
+      fetchPendingInvitations();
+    });
+
+    return {
+      currentJudges,
+      allJudges,
+      pendingInvitations,
+      inviteJudge,
+    };
   },
 };
 </script>

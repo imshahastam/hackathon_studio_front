@@ -6,7 +6,10 @@
         <div class="timeline-status">
           {{ statusText(getPhaseStatus(phase)) }}
         </div>
-        <div class="timeline-marker" :class="getPhaseStatus(phase)"></div>
+        <div
+          class="timeline-marker"
+          :class="statusClass(getPhaseStatus(phase))"
+        ></div>
         <div class="timeline-content">
           <div class="timeline-date">{{ formatDate(phase.startTime) }}</div>
           <div class="timeline-title">{{ phase.name }}</div>
@@ -41,26 +44,20 @@ onMounted(async () => {
 
 function getPhaseStatus(phase) {
   const now = new Date();
+
+  if (!Array.isArray(phase.startTime) || !Array.isArray(phase.endTime)) {
+    return "UNKNOWN";
+  }
+
   const [sy, sm, sd, sh = 0, smin = 0] = phase.startTime;
   const [ey, em, ed, eh = 0, emin = 0] = phase.endTime;
 
   const start = new Date(sy, sm - 1, sd, sh, smin);
   const end = new Date(ey, em - 1, ed, eh, emin);
+
   if (now < start) return "NOT_STARTED";
   if (now >= start && now < end) return "ACTIVE";
   return "FINISHED";
-}
-
-function formatDate(dateArr) {
-  if (!Array.isArray(dateArr)) return "??";
-  const [year, month, day, hour, minute] = dateArr;
-  const date = new Date(year, month - 1, day, hour || 0, minute || 0);
-  const n_day = date.getDate().toString().padStart(2, "0");
-  const n_month = date.toLocaleString("en-EN", { month: "long" }); // май, июнь...
-  const n_hours = date.getHours().toString().padStart(2, "0");
-  const n_minutes = date.getMinutes().toString().padStart(2, "0");
-
-  return `${n_day} ${n_month}, ${n_hours}:${n_minutes}`;
 }
 
 function statusText(status) {
@@ -71,9 +68,36 @@ function statusText(status) {
       return "In progress";
     case "FINISHED":
       return "Finished";
+    case "UNKNOWN":
+      return "Invalid data";
     default:
       return "";
   }
+}
+
+function statusClass(status) {
+  switch (status) {
+    case "NOT_STARTED":
+      return "not-started";
+    case "ACTIVE":
+      return "active";
+    case "FINISHED":
+      return "finished";
+    default:
+      return "";
+  }
+}
+
+function formatDate(dateArr) {
+  if (!Array.isArray(dateArr)) return "??";
+  const [year, month, day, hour, minute] = dateArr;
+  const date = new Date(year, month - 1, day, hour || 0, minute || 0);
+  const n_day = date.getDate().toString().padStart(2, "0");
+  const n_month = date.toLocaleString("en-EN", { month: "long" });
+  const n_hours = date.getHours().toString().padStart(2, "0");
+  const n_minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${n_day} ${n_month}, ${n_hours}:${n_minutes}`;
 }
 </script>
 

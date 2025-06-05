@@ -3,6 +3,19 @@
     <!-- Заголовок + кнопки справа -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="mb-0">{{ hackathon.name }}</h2>
+      <!-- Регистрация (только для PARTICIPANT и если не организатор) -->
+      <div v-if="showRegisterBlock" class="mt-4">
+        <button
+          v-if="!hasApplied"
+          class="btn btn-success"
+          @click="registerToHackathon"
+        >
+          Register
+        </button>
+        <span v-if="hasApplied" class="text-success fw-semibold">
+          ✅ Your application has been received.
+        </span>
+      </div>
       <div class="d-flex gap-2" v-if="isMyHackathon">
         <button
           type="button"
@@ -34,6 +47,15 @@
     <HackathonInlineTimeline
       v-if="hackathon"
       :hackathon="hackathon"
+      :hackathon-id="Number($route.params.id)"
+    />
+
+    <HackApplication
+      v-if="
+        isAuthReady &&
+        isMyHackathon &&
+        authStore.roles.includes('ROLE_ORGANIZER')
+      "
       :hackathon-id="Number($route.params.id)"
     />
 
@@ -103,17 +125,21 @@
 import { useAuthStore } from "@/store/auth";
 import HackathonTimeline from "@/components/HackathonTimeline.vue";
 import HackathonInlineTimeline from "@/components/HackathonInlineTimeline.vue";
+import HackApplication from "@/components/HackApplication.vue";
+import api from "@/axios";
 
 export default {
   name: "HackathonDetail",
   components: {
     HackathonTimeline,
     HackathonInlineTimeline,
+    HackApplication,
   },
   data() {
     return {
       hackathon: null,
       judges: [],
+      hasApplied: false,
     };
   },
   computed: {
@@ -126,11 +152,26 @@ export default {
         Number(this.hackathon.organizerId) === Number(this.authStore.userId)
       );
     },
+    showRegisterBlock() {
+      console.log("roles", this.authStore.roles);
+      return (
+        this.authStore.roles.includes("ROLE_PARTICIPANT") && !this.isMyHackathon
+      );
+    },
+    isAuthReady() {
+      return (
+        this.authStore.userId !== null &&
+        this.authStore.userId !== undefined &&
+        Array.isArray(this.authStore.roles) &&
+        this.authStore.roles.length > 0
+      );
+    },
   },
   mounted() {
     const hackathonId = this.$route.params.id;
     this.fetchHackathonDetails(hackathonId);
     this.fetchJudges(hackathonId);
+    this.checkIfApplied();
   },
   methods: {
     statusBadgeClass(status) {
@@ -215,6 +256,38 @@ export default {
     editHackathon() {
       const id = this.$route.params.id;
       this.$router.push({ name: "EditHackathon", params: { id } });
+    },
+
+    async registerToHackathon() {
+      try {
+        const hackathonId = this.$route.params.id;
+        const userId = this.authStore.userId;
+
+        await api.post(`/hackathons/${hackathonId}/apply`, null, {
+          params: { userId },
+        });
+
+        this.hasApplied = true; // показываем сообщение
+      } catch (error) {
+        console.error("Ошибка при регистрации:", error);
+        alert("Ошибка: " + (error.response?.data?.message || error.message));
+      }
+    },
+
+    async checkIfApplied() {
+      try {
+        const hackathonId = this.$route.params.id;
+        const userId = this.authStore.userId;
+
+        const response = await api.get(`/hackathons/${hackathonId}/applied`, {
+          params: { userId },
+        });
+
+        console.log("check res:", response.data);
+        this.hasApplied = response.data === true;
+      } catch (error) {
+        console.error("Ошибка при проверке заявки:", error);
+      }
     },
   },
 };
