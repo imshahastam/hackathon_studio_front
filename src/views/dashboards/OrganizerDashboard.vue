@@ -1,22 +1,26 @@
 <template>
-  <div class="d-flex" style="min-height: 100vh">
-    <SidebarComponent @logout="logout" />
-    <div class="container p-4">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <div>
-          <h1 class="mb-0">Welcome, {{ userName }}!</h1>
+  <div class="wrapper bg-light">
+    <div class="d-flex">
+      <SidebarComponent @logout="logout" />
+      <div class="container p-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div>
+            <h1 class="mb-0">Welcome, {{ userName }}!</h1>
+          </div>
         </div>
+
+        <router-view />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import SidebarComponent from "@/components/SidebarComponent.vue";
-import { useAuthStore } from "../store/auth.js";
+import SidebarComponent from "@/components/sidebars/SidebarComponent.vue";
+import { useAuthStore } from "../../store/auth.js";
 
 export default {
-  name: "DashboardPage",
+  name: "OrganizerDashboard",
   components: { SidebarComponent },
   computed: {
     userName() {
@@ -42,4 +46,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+</style>

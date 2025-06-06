@@ -5,11 +5,16 @@ import HackathonDetail from "../views/HackathonDetail.vue";
 import Leaderboard from "../views/Leaderboard.vue";
 import LoginPage from "../views/LoginPage.vue";
 import RegistrationForm from "@/views/RegistrationForm.vue";
-import DashboardPage from "../views/Dashboard.vue";
+import DashboardPage from "@/views/DashboardPage.vue";
+import OrganizerDashboard from "@/views/dashboards/OrganizerDashboard.vue";
+import ParticipantDashboard from "@/views/dashboards/ParticipantDashboard.vue";
+import JudgeDashboard from "@/views/dashboards/JudgeDashboard.vue";
+import HackathonTeams from "@/views/HackathonTeams.vue";
 import CreateHackathonForm from "@/views/CreateHackathonForm.vue";
 import TestComponent from "@/components/TestComponent.vue";
 import { useAuthStore } from "../store/auth.js";
 import OrganizerHackathons from "@/views/OrganizerHackathons.vue";
+import JudgeInvitations from "@/views/JudgeInvitations.vue";
 
 const routes = [
   {
@@ -66,9 +71,38 @@ const routes = [
     },
   },
   {
-    path: "/my-hackathons",
-    name: "OrganizerHackathons",
-    component: OrganizerHackathons,
+    path: "/participant",
+    name: "ParticipantDashboard",
+    component: ParticipantDashboard,
+  },
+  {
+    path: "/judge",
+    name: "JudgeDashboard",
+    component: JudgeDashboard,
+    children: [
+      {
+        path: "invitations",
+        name: "JudgeInvitations",
+        component: JudgeInvitations,
+      },
+    ],
+  },
+  {
+    path: "/organizer",
+    name: "OrganizerDashboard",
+    component: OrganizerDashboard,
+    children: [
+      {
+        path: "/my-hackathons",
+        name: "OrganizerHackathons",
+        component: OrganizerHackathons,
+      },
+      {
+        path: "/my-hackathons-teams",
+        name: "HackathonTeams",
+        component: HackathonTeams,
+      },
+    ],
   },
   {
     path: "/hackathons/create",

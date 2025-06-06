@@ -24,6 +24,8 @@
       >
         <i class="bi bi-bell"></i>
       </li>
+
+      <!-- Меню пользователя -->
       <li
         class="nav-item dropdown list-none mx-4"
         v-if="authStore.isAuthenticated"
@@ -46,23 +48,13 @@
           <li>
             <a class="dropdown-item">My profile</a>
           </li>
-          <li>
-            <a class="dropdown-item" @click.prevent="switchRole('ORGANIZER')">
-              Organizer
+          <li v-for="role in availableRoles" :key="role">
+            <a class="dropdown-item" @click.prevent="switchRole(role)">
+              {{ formatRole(role) }}
             </a>
           </li>
           <li>
-            <a class="dropdown-item" @click.prevent="switchRole('PARTICIPANT')">
-              Participant
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" @click.prevent="switchRole('JUDGE')">
-              Judge
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item hover:bg-red" @click.prevent="logout"
+            <a class="dropdown-item text-danger" @click.prevent="logout"
               >Log out</a
             >
           </li>
@@ -73,6 +65,7 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import { useAuthStore } from "@/store/auth.js";
 import { useRouter } from "vue-router";
 import { useLogout } from "@/composables/useLogout";
@@ -85,13 +78,22 @@ export default {
     const logout = useLogout();
 
     function switchRole(role) {
-      // Здесь лучше обновлять роль через специальный action/pinia (если реализуешь)
       authStore.role = role;
 
-      // Перенаправлять на соответствующий кабинет
-      if (role === "ORGANIZER") router.push("/dashboard");
-      if (role === "PARTICIPANT") router.push("/participant");
-      if (role === "JUDGE") router.push("/judge");
+      if (role === "ROLE_ORGANIZER") router.push("/organizer");
+      if (role === "ROLE_PARTICIPANT") router.push("/participant");
+      if (role === "ROLE_JUDGE") router.push("/judge");
+    }
+
+    const availableRoles = computed(() => authStore.roles);
+
+    function formatRole(role) {
+      const map = {
+        ROLE_ORGANIZER: "Organizer",
+        ROLE_PARTICIPANT: "Participant",
+        ROLE_JUDGE: "Judge",
+      };
+      return map[role] || role;
     }
 
     let Links = [
@@ -99,7 +101,15 @@ export default {
       { name: "Hackathons", link: "/hackathons" },
       { name: "Leaderboard", link: "/leaderboard" },
     ];
-    return { Links, authStore, switchRole, logout };
+
+    return {
+      Links,
+      authStore,
+      switchRole,
+      logout,
+      availableRoles,
+      formatRole,
+    };
   },
 };
 </script>

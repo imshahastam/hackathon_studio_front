@@ -16,7 +16,11 @@
     <!-- Приглашения -->
     <h4>Invite judges:</h4>
     <div class="row">
-      <div class="col-md-6 mb-4" v-for="judge in allJudges" :key="judge.id">
+      <div
+        class="col-md-6 mb-4"
+        v-for="judge in availableJudges"
+        :key="judge.id"
+      >
         <div class="card h-100">
           <div class="row g-0">
             <div class="col-4 d-flex align-items-center justify-content-center">
@@ -72,7 +76,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import api from "@/axios";
 
 export default {
@@ -156,11 +160,17 @@ export default {
       fetchPendingInvitations();
     });
 
+    const availableJudges = computed(() => {
+      const currentJudgeIds = new Set(currentJudges.value.map((j) => j.id));
+      return allJudges.value.filter((judge) => !currentJudgeIds.has(judge.id));
+    });
+
     return {
       currentJudges,
       allJudges,
       pendingInvitations,
       inviteJudge,
+      availableJudges,
     };
   },
 };

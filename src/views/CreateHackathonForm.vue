@@ -63,7 +63,7 @@
             type="datetime-local"
             class="form-control"
             v-model="form.start_date"
-            :class="{ 'is-invalid': submitted && !isStartDateValid }"
+            :class="{ 'is-invalid': submitted }"
             required
           />
           <div class="invalid-feedback">
@@ -76,7 +76,7 @@
             type="datetime-local"
             class="form-control"
             v-model="form.end_date"
-            :class="{ 'is-invalid': submitted && !isEndDateValid }"
+            :class="{ 'is-invalid': submitted }"
             required
           />
           <div class="invalid-feedback">
@@ -175,21 +175,21 @@ export default {
       const text = div.textContent || div.innerText || "";
       return text.trim().length >= 20;
     },
-    isStartDateValid() {
-      if (!this.form.start_date) return false;
-      const now = new Date();
-      const start = new Date(this.form.start_date);
-      return (
-        start >= new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      );
-    },
-    isEndDateValid() {
-      if (!this.form.end_date || !this.form.start_date) return false;
-      const start = new Date(this.form.start_date);
-      const end = new Date(this.form.end_date);
-      const now = new Date();
-      return end > start && end > now;
-    },
+    //isStartDateValid() {
+    //  if (!this.form.start_date) return false;
+    //  const now = new Date();
+    //  const start = new Date(this.form.start_date);
+    //  return (
+    //    start >= new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    //  );
+    //},
+    //isEndDateValid() {
+    //  if (!this.form.end_date || !this.form.start_date) return false;
+    //  const start = new Date(this.form.start_date);
+    //  const end = new Date(this.form.end_date);
+    //  const now = new Date();
+    //  return end > start && end > now;
+    //},
     isPrizeFundValid() {
       return typeof this.form.prizeFund === "number" && this.form.prizeFund > 0;
     },
@@ -200,8 +200,8 @@ export default {
       return (
         this.isNameValid &&
         this.isDescriptionValid &&
-        this.isStartDateValid &&
-        this.isEndDateValid &&
+        //this.isStartDateValid &&
+        //this.isEndDateValid &&
         this.isPrizeFundValid &&
         this.isConditionsValid
       );
