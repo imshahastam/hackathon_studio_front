@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "../views/HomePage.vue";
 import HackathonList from "../views/HackathonList.vue";
 import HackathonDetail from "../views/HackathonDetail.vue";
+import TeamDetails from "@/views/TeamDetails.vue";
 import Leaderboard from "../views/Leaderboard.vue";
 import LoginPage from "../views/LoginPage.vue";
 import RegistrationForm from "@/views/RegistrationForm.vue";
@@ -10,6 +11,7 @@ import OrganizerDashboard from "@/views/dashboards/OrganizerDashboard.vue";
 import ParticipantDashboard from "@/views/dashboards/ParticipantDashboard.vue";
 import JudgeDashboard from "@/views/dashboards/JudgeDashboard.vue";
 import HackathonTeams from "@/views/HackathonTeams.vue";
+import ParticipantTeams from "@/views/ParticipantTeams.vue";
 import CreateHackathonForm from "@/views/CreateHackathonForm.vue";
 import TestComponent from "@/components/TestComponent.vue";
 import { useAuthStore } from "../store/auth.js";
@@ -37,6 +39,12 @@ const routes = [
     name: "HackathonDetail",
     component: HackathonDetail,
     props: true, // передаем параметр в компонент
+  },
+  {
+    path: "/teams/:id",
+    name: "TeamDetails",
+    component: TeamDetails,
+    props: true,
   },
   {
     path: "/leaderboard",
@@ -74,6 +82,13 @@ const routes = [
     path: "/participant",
     name: "ParticipantDashboard",
     component: ParticipantDashboard,
+    children: [
+      {
+        path: "teams",
+        name: "ParticipantTeams",
+        component: ParticipantTeams,
+      },
+    ],
   },
   {
     path: "/judge",

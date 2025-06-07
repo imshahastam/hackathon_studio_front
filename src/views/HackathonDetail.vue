@@ -84,31 +84,12 @@
 
     <div v-html="hackathon.description"></div>
 
-    <!-- Судьи -->
-    <div class="mt-5">
-      <h4>Judges</h4>
-      <div v-if="judges.length === 0" class="text-muted">
-        Judges have not yet been appointed for this hackathon.
-      </div>
-      <div v-else>
-        <div
-          class="card mb-3 p-3 shadow-sm"
-          v-for="judge in judges"
-          :key="judge.id"
-        >
-          <h5>{{ judge.firstName }} {{ judge.lastName }}</h5>
-          <p class="mb-1"><strong>Username:</strong> {{ judge.username }}</p>
-          <p class="mb-1"><strong>Company:</strong> {{ judge.company }}</p>
-          <p class="mb-1"><strong>EXP:</strong> {{ judge.workExperience }}</p>
-          <p class="mb-0"><strong>Bio:</strong> {{ judge.bio }}</p>
-        </div>
-      </div>
-    </div>
-
     <!-- Таймлайн -->
     <div class="mt-5">
       <HackathonTimeline :hackathon-id="Number($route.params.id)" />
     </div>
+
+    <ParticipantsTeamsPanel :hackathonId="Number($route.params.id)" />
   </div>
 
   <div v-else class="d-flex justify-content-center align-items-center mt-5">
@@ -126,6 +107,7 @@ import { useAuthStore } from "@/store/auth";
 import HackathonTimeline from "@/components/HackathonTimeline.vue";
 import HackathonInlineTimeline from "@/components/HackathonInlineTimeline.vue";
 import HackApplication from "@/components/HackApplication.vue";
+import ParticipantsTeamsPanel from "@/components/ParticipantsTeamsPanel.vue";
 import api from "@/axios";
 
 export default {
@@ -134,6 +116,7 @@ export default {
     HackathonTimeline,
     HackathonInlineTimeline,
     HackApplication,
+    ParticipantsTeamsPanel,
   },
   data() {
     return {

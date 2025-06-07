@@ -8,15 +8,26 @@
         v-for="hackathon in hackathons"
         :key="hackathon.id"
       >
-        <h2 class="accordion-header" :id="'heading-' + hackathon.id">
-          <button
-            class="accordion-button"
-            :class="{ collapsed: !expandedHackathons.includes(hackathon.id) }"
-            type="button"
-            @click="toggleAccordion(hackathon.id)"
-          >
-            {{ hackathon.name }}
-          </button>
+        <h2 :id="'heading-' + hackathon.id" class="accordion-header">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <button
+              class="accordion-button flex-grow-1 me-2"
+              :class="{ collapsed: !expandedHackathons.includes(hackathon.id) }"
+              type="button"
+              @click="toggleAccordion(hackathon.id)"
+            >
+              {{ hackathon.name }}
+            </button>
+
+            <router-link
+              :to="{ name: 'HackathonDetail', params: { id: hackathon.id } }"
+              class="btn btn-link p-0 text-decoration-none m-4"
+              title="Hackathon details"
+              @click.stop
+            >
+              <i class="bi bi-info-circle fs-5"></i>
+            </router-link>
+          </div>
         </h2>
         <div
           :id="'collapse-' + hackathon.id"
@@ -28,23 +39,46 @@
             <div v-if="loadingHackathonId === hackathon.id" class="text-muted">
               Loading teams...
             </div>
-            <ul v-else class="list-group">
-              <li
-                v-for="team in teamsByHackathon[hackathon.id]"
-                :key="team.id"
-                class="list-group-item"
-              >
-                <strong>{{ team.name }}</strong> — {{ team.leaderFullName }}
-                <em>({{ team.membersAmount }} members)</em>
-              </li>
 
-              <li
+            <div v-else>
+              <table
+                v-if="teamsByHackathon[hackathon.id]?.length"
+                class="table table-bordered table-hover"
+              >
+                <thead>
+                  <tr>
+                    <th>Team Name</th>
+                    <th>Leader</th>
+                    <th>Members</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="team in teamsByHackathon[hackathon.id]"
+                    :key="team.id"
+                  >
+                    <td>
+                      <router-link
+                        :to="{ name: 'TeamDetails', params: { id: team.id } }"
+                        class="team-link"
+                        title="Team's details"
+                      >
+                        {{ team.name }}
+                      </router-link>
+                    </td>
+                    <td>{{ team.leaderFullName }}</td>
+                    <td>{{ team.membersAmount }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div
                 v-if="teamsByHackathon[hackathon.id]?.length === 0"
-                class="list-group-item text-muted"
+                class="text-muted"
               >
                 No teams created yet.
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -98,3 +132,20 @@ const toggleAccordion = async (hackathonId) => {
 
 onMounted(fetchHackathons);
 </script>
+
+<style scoped>
+.table th {
+  background-color: #f8f9fa;
+}
+.team-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.team-link:hover {
+  color: #0d6efd; /* Bootstrap синий */
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>

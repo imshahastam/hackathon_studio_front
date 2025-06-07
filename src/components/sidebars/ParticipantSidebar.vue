@@ -27,7 +27,7 @@
         </li>
         <li>
           <router-link to="/participant/teams" class="nav-link text-white"
-            ><i class="bi bi-people me-2"></i>My Team</router-link
+            ><i class="bi bi-people me-2"></i>My Teams</router-link
           >
         </li>
         <li>
