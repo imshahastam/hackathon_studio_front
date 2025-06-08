@@ -6,7 +6,7 @@
       style="width: 260px; position: sticky; top: 0; height: 100vh"
     >
       <router-link
-        to="/dashboard"
+        to="/organizer"
         class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
       >
         <svg class="bi me-2" width="40" height="32">
@@ -16,30 +16,20 @@
       </router-link>
       <hr />
       <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-          <router-link
-            to="/dashboard"
-            class="nav-link active text-white"
-            aria-current="page"
-          >
-            <i class="bi bi-house-door me-2"></i>
-            Main
-          </router-link>
-        </li>
         <li>
-          <router-link to="/my-hackathons" class="nav-link text-white">
+          <router-link to="my-hackathons" class="nav-link text-white">
             <i class="bi bi-speedometer2 me-2"></i>
             Hackathons
           </router-link>
         </li>
         <li>
-          <router-link to="/judges" class="nav-link text-white">
+          <router-link to="my-hackathons-judges" class="nav-link text-white">
             <i class="bi bi-people me-2"></i>
             Judges
           </router-link>
         </li>
         <li>
-          <router-link to="/my-hackathons-teams" class="nav-link text-white">
+          <router-link to="my-hackathons-teams" class="nav-link text-white">
             <i class="bi bi-grid-3x3-gap me-2"></i>
             Teams
           </router-link>

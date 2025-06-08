@@ -11,12 +11,14 @@ import OrganizerDashboard from "@/views/dashboards/OrganizerDashboard.vue";
 import ParticipantDashboard from "@/views/dashboards/ParticipantDashboard.vue";
 import JudgeDashboard from "@/views/dashboards/JudgeDashboard.vue";
 import HackathonTeams from "@/views/HackathonTeams.vue";
+import HackathonJudges from "@/views/HackathonJudges.vue";
 import ParticipantTeams from "@/views/ParticipantTeams.vue";
 import CreateHackathonForm from "@/views/CreateHackathonForm.vue";
 import TestComponent from "@/components/TestComponent.vue";
 import { useAuthStore } from "../store/auth.js";
 import OrganizerHackathons from "@/views/OrganizerHackathons.vue";
 import JudgeInvitations from "@/views/JudgeInvitations.vue";
+import JudgeProfile from "@/views/JudgeProfile.vue";
 
 const routes = [
   {
@@ -82,7 +84,14 @@ const routes = [
     path: "/participant",
     name: "ParticipantDashboard",
     component: ParticipantDashboard,
+    redirect: "/participant/teams",
     children: [
+      {
+        path: "my-hackathons-part",
+        name: "MyHackathonsParticipant",
+        component: OrganizerHackathons,
+        props: { isParticipantView: true },
+      },
       {
         path: "teams",
         name: "ParticipantTeams",
@@ -94,6 +103,7 @@ const routes = [
     path: "/judge",
     name: "JudgeDashboard",
     component: JudgeDashboard,
+    redirect: "invitations",
     children: [
       {
         path: "invitations",
@@ -106,16 +116,23 @@ const routes = [
     path: "/organizer",
     name: "OrganizerDashboard",
     component: OrganizerDashboard,
+    redirect: "/my-hackathons",
     children: [
       {
         path: "/my-hackathons",
-        name: "OrganizerHackathons",
+        name: "MyHackathonsOrganizer",
         component: OrganizerHackathons,
+        props: { isParticipantView: false },
       },
       {
         path: "/my-hackathons-teams",
         name: "HackathonTeams",
         component: HackathonTeams,
+      },
+      {
+        path: "/my-hackathons-judges",
+        name: "HackathonJudges",
+        component: HackathonJudges,
       },
     ],
   },
@@ -128,6 +145,12 @@ const routes = [
     path: "/hackathons/:id/edit",
     name: "EditHackathon",
     component: CreateHackathonForm,
+    props: true,
+  },
+  {
+    path: "/my-hackathons-judges/:id",
+    name: "JudgeProfile",
+    component: JudgeProfile,
     props: true,
   },
 ];

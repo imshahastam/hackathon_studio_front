@@ -17,7 +17,7 @@
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
           <router-link
-            to="/participant/hackathons"
+            to="/participant/my-hackathons-part"
             class="nav-link text-white bg-black"
             aria-current="page"
           >
@@ -28,11 +28,6 @@
         <li>
           <router-link to="/participant/teams" class="nav-link text-white"
             ><i class="bi bi-people me-2"></i>My Teams</router-link
-          >
-        </li>
-        <li>
-          <router-link to="/participant/rating" class="nav-link text-white"
-            ><i class="bi bi-grid-3x3-gap me-2"></i>Leaderboard</router-link
           >
         </li>
       </ul>

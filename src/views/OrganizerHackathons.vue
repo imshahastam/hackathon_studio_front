@@ -1,14 +1,15 @@
 <template>
   <div class="container mt-6">
     <div v-if="hackathons.length === 0" class="text-muted">
-      You're not organizing any hackathons yet.
+      You're not {{ isParticipantView ? "participating in" : "organizing" }} any
+      hackathons yet.
     </div>
 
     <div v-else class="d-flex flex-column gap-3">
       <div
         class="card shadow-sm p-3"
         v-for="hackathon in hackathons"
-        :key="hackathon.name"
+        :key="hackathon.id"
         @click="goToHackathonDetail(hackathon.id)"
         style="cursor: pointer"
       >
@@ -19,7 +20,6 @@
           <div class="mb-2 mb-md-0">
             <h4 class="mb-1">{{ hackathon.name }}</h4>
             <div class="mb-2">
-              <!-- Статус и тип в виде badges -->
               <span class="badge" :class="statusBadgeClass(hackathon.status)">{{
                 hackathon.status
               }}</span>
@@ -41,7 +41,9 @@
             class="d-flex flex-column align-items-end justify-content-start mt-2 mt-md-0"
             style="min-width: 150px"
           >
+            <!-- Кнопки доступны только организатору -->
             <div
+              v-if="!isParticipantView"
               class="btn-group btn-group-sm mb-2"
               role="group"
               aria-label="Small button group"
@@ -79,7 +81,13 @@ import axios from "axios";
 import { useAuthStore } from "../store/auth.js";
 
 export default {
-  name: "OrganizerHackathons",
+  name: "HackathonList",
+  props: {
+    isParticipantView: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       hackathons: [],
@@ -87,8 +95,12 @@ export default {
   },
   async created() {
     const authStore = useAuthStore();
+    const endpoint = this.isParticipantView
+      ? "http://localhost:8080/participants/my-hackathons"
+      : "http://localhost:8080/hackathons/my";
+
     try {
-      const response = await axios.get("http://localhost:8080/hackathons/my", {
+      const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${authStore.token}`,
         },
@@ -103,11 +115,9 @@ export default {
       return hackathon.participantIds?.length || 0;
     },
     countTeams(hackathon) {
-      // пока нет информации о командах, можно заглушку:
-      return Math.ceil((hackathon.participantIds?.length || 0) / 4); // например, 4 чел. в команде
+      return Math.ceil((hackathon.participantIds?.length || 0) / 4);
     },
     goToHackathonDetail(hackathonId) {
-      // Переход на страницу с деталями хакатона по ID
       this.$router.push({
         name: "HackathonDetail",
         params: { id: hackathonId },
@@ -116,11 +126,11 @@ export default {
     statusBadgeClass(status) {
       switch (status) {
         case "ACTIVE":
-          return "text-bg-warning"; // Желтый для активных
+          return "text-bg-warning";
         case "PLANNED":
-          return "text-bg-secondary"; // Серый для запланированных
+          return "text-bg-secondary";
         default:
-          return "text-bg-success"; // Зеленый для других статусов
+          return "text-bg-success";
       }
     },
     typeBadgeClass(type) {
@@ -138,7 +148,6 @@ export default {
 
       try {
         const token = localStorage.getItem("token");
-
         const response = await fetch(
           `http://localhost:8080/hackathons/${hackathon.id}`,
           {
@@ -155,7 +164,7 @@ export default {
 
         alert("Successfully deleted.");
         this.hackathons = this.hackathons.filter((h) => h.id !== hackathon.id);
-        this.$router.back(); // возвращаемся на предыдущую страницу
+        this.$router.back();
       } catch (error) {
         console.error("Ошибка при удалении:", error);
         alert("Error");
